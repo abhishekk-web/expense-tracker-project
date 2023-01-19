@@ -1,3 +1,4 @@
+
 async function mySave(e) {
 
     try{
@@ -9,10 +10,12 @@ async function mySave(e) {
     const expenses = {
         expense: e.target.expense.value,
         description: e.target.description.value,
-        category: e.target.category.value
+        category: e.target.category.value,
+        userId: 1
     }
 
-    const response = await axios.post("http://localhost:3000/expense/postexpense", expenses)
+    const token = localStorage.getItem("token");
+    const response = await axios.post("http://localhost:3000/expense/postexpense", expenses, {headers: {"Authorization": token}})
     
     
         console.log(response);
@@ -29,12 +32,13 @@ async function mySave(e) {
 window.addEventListener("DOMContentLoaded", async () => {
 
     try {
-
-    const response = await axios.get("http://localhost:3000/expense/getexpense");
-    console.log(response);
-    response.data.data.forEach(expense => {
-        showUser(expense);
-    })
+        const token = localStorage.getItem("token");
+        // console.log(token);
+        const response = await axios.get("http://localhost:3000/expense/getexpense", {headers: {"Authorization": token}});
+        console.log(response);
+        response.data.data.forEach(expense => {
+            showUser(expense);
+        })
 }
 
 catch(err)  {
@@ -61,7 +65,8 @@ async function deleteUser(userId){
 
     try {
     
-        await axios.delete(`http://localhost:3000/expense/deleteexpense/${userId}`);
+        const token = localStorage.getItem("token");
+        await axios.delete(`http://localhost:3000/expense/deleteexpense/${userId}`, {headers: {"Authorization": token}});
             
             removeuser(userId);
 
@@ -81,4 +86,14 @@ function removeuser(userId){
   
     parentNode.removeChild(childNodeToBeDeleted);
   
+}
+
+
+function editUser(expense, description, category, id) {
+
+    document.getElementById("description").value = description;
+    document.getElementById("category").value = category;
+    document.getElementById("expense").value = expense;
+    deleteUser(id);
+
 }

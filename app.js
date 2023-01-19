@@ -9,6 +9,9 @@ const cors = require('cors');
 const signUproutes = require('./routes/user');
 const expenseRoutes = require('./routes/expense');
 
+const user = require('./models/user');
+const expense = require('./models/expense');
+const { HasMany } = require('sequelize');
 
 const app = express();
 
@@ -20,7 +23,8 @@ app.use(bodyParser.json({extended: false}));
 app.use('/user', signUproutes);
 app.use('/expense', expenseRoutes);
 
-
+user.hasMany(expense);
+expense.belongsTo(user);
 
 
 sequelize

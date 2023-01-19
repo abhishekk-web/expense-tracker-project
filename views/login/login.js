@@ -13,9 +13,11 @@ async function login(e) {
 
         const response = await axios.post("http://localhost:3000/user/login", login)
         if(response.status === 200){
-        
+            alert(response.data.message);
+            console.log(response.data);
+            localStorage.setItem("token", response.data.token);
             window.location.href="../expense/expense.html";
-            console.log(response);
+            
         
         }
         else{
