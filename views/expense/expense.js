@@ -64,7 +64,10 @@ function showLeaderBoard() {
 
         var leaderboardElem = document.getElementById('leaderboard');
         leaderboardElem.innerHTML += '<h1>Leader Board</h1>';
-        userLeaderBoardArray.data.userPremiumDetails.forEach((userDetails) => {
+        userLeaderBoardArray.data.users.forEach((userDetails) => {
+            if(userDetails.total_cost === null){
+                userDetails.total_cost = 0;
+            }
           leaderboardElem.innerHTML += `<li style="text-decoration: none; font-weight: bold; color: black; border: 3px solid black; border-radius: 5px; margin-left: 350px; padding-top: 7px; width: 500px; height: 50px; margin-top: 20px;">Name - ${userDetails.name} Expense - ${userDetails.total_cost}</li>`;
         })
       }
