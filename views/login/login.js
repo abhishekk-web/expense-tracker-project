@@ -32,3 +32,9 @@ async function login(e) {
     }
 
 }
+
+function resetpassword() {
+
+    window.location.href = '../reset/reset.html'
+
+}
