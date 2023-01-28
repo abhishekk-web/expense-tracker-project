@@ -7,6 +7,8 @@ const authenticateController = require('../middleware/auth');
 
 router.post("/postexpense", authenticateController.authenticate ,expenseController.postexpense);
 
+router.get('/download', authenticateController.authenticate, expenseController.download);
+
 router.get("/getexpense", authenticateController.authenticate , expenseController.getexpense);
 
 router.delete("/deleteexpense/:id", authenticateController.authenticate, expenseController.detetePost);

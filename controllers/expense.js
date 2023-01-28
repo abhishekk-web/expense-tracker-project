@@ -1,4 +1,6 @@
 const expenses = require('../models/expense');
+const S3Services = require('../services/S3services');
+const userservice = require('../services/userservices');
 
 exports.postexpense = async(req, res) => {
 
@@ -37,6 +39,28 @@ exports.getexpense = async(req, res, next) => {
 
 }
 
+exports.download = async(req, res) => {
+
+    try {
+
+        const expenses = await userservice.getExpenses(req);
+        console.log(expenses);
+        const stringifiedExpenses = JSON.stringify(expenses);
+
+        const userId = req.user.id;
+
+        const filename = `Expenses${userId}/${new Date()}.txt`;
+        const fileURL = await S3Services.uploadToS3(stringifiedExpenses, filename);
+        res.status(200).json({fileURL, success: true})
+
+    }
+
+    catch(err){
+        console.log(err);
+    }
+
+}
+
 exports.detetePost = async (req, res, next) => {
     
     try {
@@ -62,3 +86,4 @@ exports.detetePost = async (req, res, next) => {
     }
 
 }
+

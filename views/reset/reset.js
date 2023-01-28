@@ -14,10 +14,6 @@ async function forgotpassword(e) {
     const res = await axios.post('http://localhost:3000/password/forgotpassword',userDetails);
     console.log(res);
 
-        
-
-        
-
     }
 
     catch(err){
