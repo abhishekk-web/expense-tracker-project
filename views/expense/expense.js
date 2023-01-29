@@ -1,3 +1,4 @@
+// const pagination = document.getElementById("pagination");
 
 
 async function mySave(e) {
@@ -77,6 +78,13 @@ function showLeaderBoard() {
 
 window.addEventListener("DOMContentLoaded", async () => {
 
+    const page = 1;
+    getPost(page);
+
+})
+
+    async function getPost(page) {
+
     try {
         const token = localStorage.getItem("token");
         const decodedToken = parseJwt(token);
@@ -89,18 +97,22 @@ window.addEventListener("DOMContentLoaded", async () => {
             showLeaderBoard();
 
         }
-        const response = await axios.get("http://localhost:3000/expense/getexpense", {headers: {"Authorization": token}});
+        const response = await axios.get(`http://localhost:3000/expense/getexpense?page=${page}`, {headers: {"Authorization": token}});
         console.log(response);
-        response.data.data.forEach(expense => {
+
+        response.data.allData.forEach(expense => {
             showUser(expense);
         })
-}
+        showPagination(response.data.currentPage, response.data.hasnextPage, response.data.nextPage, response.data.hasPreviousPage, response.data.previousPage, response.data.lastPage);
 
-catch(err)  {
-    console.log(err);
+    }
+
+    catch(err)  {
+        console.log(err);
+
+    }
 
 }
-})
 
 function showUser(user) {
 
@@ -223,4 +235,31 @@ async function download(e) {
         console.log(err);
     }
 
+}
+
+function showPagination (currentPage, hasnextPage, nextPage, hasPreviousPage, previousPage, lastPage){
+
+    pagination.innerHTML = '';
+    console.log("yes its empty");
+    if(hasPreviousPage){
+        const btn2 = document.createElement('button')
+        btn2.classList.add('active');
+        btn2.innerHTML = previousPage
+        btn2.addEventListener('click', () => getPost(previousPage));
+        pagination.appendChild(btn2)
+    }
+        const btn1 = document.createElement('button')
+        btn1.classList.add('active');
+        btn1.innerHTML = `<h3>${currentPage}</h3>`
+        btn1.addEventListener('click', () => getPost(currentPage));
+        pagination.appendChild(btn1);
+
+
+    if(hasnextPage) {
+        const btn3 = document.createElement('button');
+        btn3.classList.add('active');
+        btn3.innerHTML = nextPage
+        btn3.addEventListener('click', () => getPost(nextPage))
+        pagination.appendChild(btn3);
+    }
 }

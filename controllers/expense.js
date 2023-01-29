@@ -19,18 +19,41 @@ exports.postexpense = async(req, res) => {
 
 }
 
+const ITEMS_PER_PAGE = 2;
+
 exports.getexpense = async(req, res, next) => {
 
     try{
 
+        const page = +req.query.page || 1;
+        console.log("page no is "+page);
+        var totalItems;
+
     // const users = req.user;
     // console.log("The user is "+ users);
-    const data = await req.user.getExpenses();
+    await expenses.count({where: {userId: req.user.id}}).then((data)=> {
+    totalItems = data;
+    return expenses.findAll({where: 
+            {userId: req.user.id},
+            offset: (page - 1) * ITEMS_PER_PAGE,
+            limit: ITEMS_PER_PAGE 
+        });
+    }).then(datas=>{
     // const data = await expenses.findAll({where: {userId: req.user.id}});
     // const data = await expenses.findAll();
-    console.log("hello world");
+        res.json({
+        allData: datas,
+        currentPage: page,
+        hasnextPage: ITEMS_PER_PAGE * page < totalItems,
+        nextPage: +page + 1,
+        hasPreviousPage: page > 1,
+        previousPage: +page - 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+        })
+        console.log(datas);
+    })
     // console.log(data);
-    return res.status(200).json({success: true, data});
+    
 
     }
     catch(err) {
@@ -52,8 +75,9 @@ exports.download = async(req, res) => {
 
         const filename = `Expenses${userId}/${new Date()}.txt`;
         const fileURL = await S3Services.uploadToS3(stringifiedExpenses, filename);
-        const filedata = await downloads.create({fileUrl: fileURL, userId: userId});
-        res.status(200).json({filedata, success: true})
+        res.status(200).json({fileURL, success: true})
+        await downloads.create({fileUrl: fileURL, userId: userId});
+        
 
     }
 
