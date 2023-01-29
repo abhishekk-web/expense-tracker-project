@@ -1,4 +1,5 @@
 const expenses = require('../models/expense');
+const downloads = require('../models/download');
 const S3Services = require('../services/S3services');
 const userservice = require('../services/userservices');
 
@@ -51,7 +52,8 @@ exports.download = async(req, res) => {
 
         const filename = `Expenses${userId}/${new Date()}.txt`;
         const fileURL = await S3Services.uploadToS3(stringifiedExpenses, filename);
-        res.status(200).json({fileURL, success: true})
+        const filedata = await downloads.create({fileUrl: fileURL, userId: userId});
+        res.status(200).json({filedata, success: true})
 
     }
 

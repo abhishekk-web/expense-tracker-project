@@ -205,6 +205,7 @@ async function download(e) {
         // e.preventDefault();
         const token = localStorage.getItem('token');
         const response = await axios.get("http://localhost:3000/expense/download", {headers: {"Authorization": token}});
+        console.log(response);
         if(response.status === 200) {
             var a = document.createElement("a");
             a.href = response.data.fileURL;

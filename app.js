@@ -17,6 +17,7 @@ const user = require('./models/user');
 const expense = require('./models/expense');
 const order = require('./models/purchase');
 const reset = require('./models/reset');
+const download = require('./models/download');
 // const { HasMany } = require('sequelize');
 
 const app = express();
@@ -43,6 +44,8 @@ order.belongsTo(user);
 user.hasMany(reset);
 reset.belongsTo(user);
 
+user.hasMany(download);
+download.belongsTo(user);
 
 sequelize
 // .sync({force:true})
